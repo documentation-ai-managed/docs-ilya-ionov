@@ -1,0 +1,125 @@
+---
+title: Core Features of Ilya Ionov
+description: Explore the main capabilities of Ilya Ionov for effective documentation organization and management.
+---
+
+## Overview
+
+Ilya Ionov provides powerful tools to organize, collaborate on, version, and share your project documentation. You create structured folders, invite team members, track changes, and export content effortlessly. These features streamline your workflow from initial setup to production deployment.
+
+<Columns cols={2}>
+  <Card title="Organize Docs" icon="folder" href="#document-organization">
+    Structure your content with nested folders and tags.
+  </Card>
+  <Card title="Team Collaboration" icon="users" href="#collaboration">
+    Real-time editing and comments for seamless teamwork.
+  </Card>
+  <Card title="Version Control" icon="git-branch" href="#version-control">
+    Track changes with full history and rollbacks.
+  </Card>
+  <Card title="Search & Export" icon="search" href="#search-export">
+    Powerful search and multiple export formats.
+  </Card>
+</Columns>
+
+## Document Organization and Folders
+
+You organize documents into hierarchical folders, mimicking your project's structure. Create root folders for guides, APIs, and changelogs, then nest subfolders for specifics.
+
+<Steps>
+  <Step title="Create Folder" icon="folder-plus">
+    Navigate to the root directory. Click the `+ Folder` button and name it `api-reference`.
+  </Step>
+  <Step title="Add Documents" icon="file-text">
+    Drag MDX files into the folder or use the upload interface.
+  </Step>
+  <Step title="Tag for Filtering" icon="tag">
+    Assign tags like `internal` or `public` to each document.
+  </Step>
+</Steps>
+
+<Callout kind="tip">
+  Use tags alongside folders for cross-referencing content across projects.
+</Callout>
+
+## Collaboration Tools for Teams
+
+Invite teammates to collaborate in real-time. You assign roles like editor or viewer, enable comments, and track contributions.
+
+<Tabs>
+  <Tab title="Invite Members" icon="user-plus">
+    Go to workspace settings. Enter emails and select roles.
+
+    ```
+    Members:
+    - alice@team.com (Editor)
+    - bob@team.com (Viewer)
+    ```
+  </Tab>
+  <Tab title="Real-time Edits" icon="edit-3">
+    Open a document. Changes sync instantly with live cursors showing who edits what.
+  </Tab>
+  <Tab title="Comments & Reviews" icon="message-circle">
+    Highlight text and add comments. Resolve threads as you merge feedback.
+  </Tab>
+</Tabs>
+
+## Version Control for Docs
+
+Ilya Ionov integrates Git-like version control. You commit changes, view diffs, and revert to previous versions without external tools.
+
+<CodeGroup tabs="Commit,Revert">
+  ````javascript
+  // Commit changes
+  const commit = await client.commit({
+    message: "Update API endpoints",
+    changes: ["docs/api.mdx"]
+  });
+  console.log(`Committed: ${commit.id}`);
+  ````
+
+  ````javascript
+  // Revert to version
+  const revert = await client.revert({
+    docId: "api-reference",
+    version: "v1.2.0"
+  });
+  console.log("Reverted successfully");
+  ````
+</CodeGroup>
+
+<Expandable title="Advanced Branching" default-open="false">
+  Create branches for features:
+
+  ```mermaid
+  graph TD
+      A[Main] --> B[feature-login]
+      B --> C[staging]
+      C --> A
+  ```
+</Expandable>
+
+## Search and Export Functionalities
+
+Search across all documents with full-text indexing. Filter by tags, folders, or dates. Export to PDF, HTML, or Markdown bundles.
+
+| Feature | Description | Formats |
+|---------|-------------|---------|
+| Global Search | Query titles, content, tags | Instant results |
+| Folder Export | Bulk download subtrees | ZIP, PDF |
+| Version Export | Specific commit snapshots | MDX, HTML |
+
+<Callout kind="info">
+  Exports include metadata like authors and timestamps for audit trails.
+</Callout>
+
+Configure search via API:
+
+```javascript
+const results = await client.search({
+  query: "authentication",
+  filters: { folder: "api-reference", tags: ["public"] }
+});
+```
+
+These features empower you to maintain professional documentation at scale. Start by organizing your first folder today.
