@@ -1,145 +1,108 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: Ilya Ionov
+  title: API
+  description: >
+    This API specification documents the available endpoints for the service.
+
+    ## Getting Started
+
+    Use the provided server URL as the base for all requests. This specification
+    currently includes a single endpoint for listing subscriptions.
+
+    ## Authentication
+
+    Authentication details are not defined in this document. If required by the
+    actual deployment, consult the service's integration guide.
+
+    ## Usage Notes
+
+    - The `/subscriptions` endpoint returns a map of subscription objects keyed
+      by subscription ID (as a string).
+    - Time fields are represented as integer epoch seconds.
   license:
     name: MIT
 servers:
-  - url: http://petstore.swagger.io/v1
+  - url: https://api.yourdomain.com
+tags:
+  - name: Subscriptions
+    description: Operations related to retrieving subscription information.
 paths:
-  /documents:
+  /subscriptions:
     get:
-      summary: List all documents
-      operationId: listDocuments
-      parameters:
-        - name: limit
-          in: query
-          description: How many items to return at one time (max 100)
-          required: false
-          schema:
-            type: integer
-            format: int32
+      tags:
+        - Subscriptions
+      operationId: listSubscriptions
+      description: Retrieve all subscriptions as a map keyed by subscription ID.
       responses:
-        200:
-          description: An paged array of documents
-          headers:
-            x-next:
-              description: A link to the next page of responses
-              schema:
-                type: string
+        '200':
+          description: A map of subscriptions keyed by subscription ID.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Documents'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Create document
-      operationId: createDocuments
-      responses:
-        201:
-          description: Null response
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /documents/{documentId}:
-    get:
-      summary: Get specific document
-      operationId: showDocumentById
-      parameters:
-        - name: documentId
-          in: path
-          required: true
-          description: The id of the document to retrieve
-          schema:
-            type: string
-      responses:
-        200:
-          description: Expected response to a valid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Documents'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /collections:
-    get:
-      summary: List all collections
-      operationId: listCollections
-      parameters:
-        - name: limit
-          in: query
-          description: How many items to return at one time (max 100)
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: An paged array of documents
-          headers:
-            x-next:
-              description: A link to the next page of responses
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Documents'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Create collection
-      operationId: createCollections
-      responses:
-        201:
-          description: Null response
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/SubscriptionsResponse'
+              example:
+                subscriptions:
+                  "123":
+                    subscriptionId: 123
+                    companySubscriptionId: "company-sub-1"
+                    status: "ACTIVE"
+                    periodStart: 1711929600
+                    periodEnd: 1714521600
+                  "456":
+                    subscriptionId: 456
+                    companySubscriptionId: "company-sub-2"
+                    status: "CANCELED"
+                    periodStart: 1711929600
+                    periodEnd: 1714521600
 components:
   schemas:
-    Document:
-      required:
-        - id
-        - title
+    Subscription:
+      type: object
+      description: A subscription record associated with a company.
       properties:
-        id:
+        subscriptionId:
           type: integer
           format: int64
-        title:
+          description: Numeric identifier of the subscription.
+          example: 123
+        companySubscriptionId:
           type: string
-        content:
+          description: External or company-specific subscription identifier.
+          example: company-sub-1
+        status:
           type: string
-    Documents:
-      type: array
-      items:
-        $ref: '#/components/schemas/Document'
-    Error:
-      required:
-        - code
-        - message
-      properties:
-        code:
+          description: >
+            Status of the subscription. Values are derived from the protobuf
+            CompanySubscriptionStatus enumeration.
+          example: ACTIVE
+        periodStart:
           type: integer
-          format: int32
-        message:
-          type: string
+          format: int64
+          description: >
+            Start of the billing period, represented as Unix epoch seconds.
+          example: 1711929600
+        periodEnd:
+          type: integer
+          format: int64
+          description: >
+            End of the billing period, represented as Unix epoch seconds. This
+            corresponds to period_end plus one day at 00:00:00.
+          example: 1714521600
+      required:
+        - subscriptionId
+        - companySubscriptionId
+        - status
+        - periodStart
+        - periodEnd
+    SubscriptionsResponse:
+      type: object
+      description: Response wrapper containing a map of subscriptions keyed by subscription ID.
+      properties:
+        subscriptions:
+          type: object
+          description: Map of subscription ID (as string) to Subscription object.
+          additionalProperties:
+            $ref: '#/components/schemas/Subscription'
+      required:
+        - subscriptions
