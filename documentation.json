@@ -13,12 +13,7 @@
     "pages": [
       {
         "group": "document",
-        "pages": [
-          {
-            "title": "trigger",
-            "path": "trigger"
-          }
-        ],
+        "pages": [],
         "icon": "alert-circle"
       }
     ]
